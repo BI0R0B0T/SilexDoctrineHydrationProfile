@@ -20,7 +20,7 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
-class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface{
+class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface {
     /**
      * Registers services on the given app.
      *
@@ -111,7 +111,6 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface{
                             break;
                         default:
                             throw new \InvalidArgumentException(sprintf('"%s" is not a recognized driver', $entity['type']));
-                            break;
                     }
                 }
                 $config->setMetadataDriverImpl($chain);
@@ -142,7 +141,7 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface{
                     $config = $app['orm.ems.config'][$name];
                 }
 
-                $ems[$name] = $app->share(function () use ($app, $options, $config) {
+                $ems[$name] = $app->share(function() use ($app, $options, $config) {
                     return LoggingEntityManager::create(
                         $app['dbs'][$options['connection']],
                         $config,
@@ -166,10 +165,10 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface{
         $templates   = $app["data_collector.templates"];
         $templates[] = array("hydrations", "@DebeshaDoctrineProfileExtraBundle/Collector/hydrations.html.twig");
         $options     = array('is_safe' => array('html'));
-        $callable    = function ($controller, $attributes = array(), $query = array()) {
+        $callable    = function($controller, $attributes = array(), $query = array()) {
             return new ControllerReference($controller, $attributes, $query);
         };
-        $collectors["hydrations"] = $app->share(function($app){
+        $collectors["hydrations"] = $app->share(function($app) {
             return $app["debesha.doctrine_extra_profiler.data_collector"];
         });
 
