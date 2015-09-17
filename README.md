@@ -1,4 +1,6 @@
 # SilexDoctrineHydrationProfile
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/BI0R0B0T/SilexDoctrineHydrationProfile/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/BI0R0B0T/SilexDoctrineHydrationProfile/?branch=master)
+
 Information about hydration of doctrine entities at the profiler in Silex
 
 Provide information about doctrine hydration performance ([debesha/DoctrineProfileExtraBundle](https://github.com/debesha/DoctrineProfileExtraBundle)) for Silex.
