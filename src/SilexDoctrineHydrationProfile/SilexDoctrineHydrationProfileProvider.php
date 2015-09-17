@@ -1,10 +1,9 @@
 <?php
 /**
- * @author Dolgov_M <mdol@1c.ru>
- * @date   21.07.2015 13:13
+ * @author Dolgov_M <dolgov@bk.ru>
  */
 
-namespace Site\SilexDoctrineHydrationProfile;
+namespace SilexDoctrineHydrationProfile;
 
 
 use Debesha\DoctrineProfileExtraBundle\DataCollector\HydrationDataCollector;
@@ -19,6 +18,7 @@ use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface{
     /**
@@ -157,7 +157,6 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface{
             return $ems;
         });
 
-        $app["its_twig_extension"]->append('\Site\SilexDoctrineHydrationProfile\TwigExtension');
     }
 
     /**
@@ -170,17 +169,22 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface{
      * @param Application $app\
      */
     public function boot(Application $app) {
-        $app["arr"]("data_collectors",$app->share(function($app){
+        $collectors  = $app["data_collectors"];
+        $templates   = $app["data_collector.templates"];
+        $templates[] = array("hydrations", "@DebeshaDoctrineProfileExtraBundle/Collector/hydrations.html.twig");
+        $options     = array('is_safe' => array('html'));
+        $callable    = function ($controller, $attributes = array(), $query = array()) {
+            return new ControllerReference($controller, $attributes, $query);
+        };
+        $collectors["hydrations"] = $app->share(function($app){
             return $app["debesha.doctrine_extra_profiler.data_collector"];
-        }), "hydrations");
-/*        $app["data_collectors"] = $app->extend("data_collectors", function($data) use ($app){
-            $data["hydrations"] = $app->share(function($app){
-                return $app["debesha.doctrine_extra_profiler.data_collector"];
-            });
-            return $data;
-        });*/
-        $app['twig.loader.filesystem']->addPath(dirname(__FILE__).DIRECTORY_SEPARATOR."views", "DebeshaDoctrineProfileExtraBundle");
-        $app["arr"]("data_collector.templates", array("hydrations", "@DebeshaDoctrineProfileExtraBundle/Collector/hydrations.html.twig"));
+        });
+
+        $app["data_collectors"]          = $collectors;
+        $app["data_collector.templates"] = $templates;
+
+        $app["twig"]->addFunction(new \Twig_SimpleFunction("controller", $callable, $options));
+        $app['twig.loader.filesystem']->addPath(dirname(__FILE__).DIRECTORY_SEPARATOR."Views", "DebeshaDoctrineProfileExtraBundle");
     }
 
 }

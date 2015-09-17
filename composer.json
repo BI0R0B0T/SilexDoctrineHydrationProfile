@@ -1,0 +1,33 @@
+{
+  "name"       : "bi0r0b0t/silex-doctrine-hydration-profiler",
+  "description": "Information about hydration of doctrine entities at the profiler in Silex",
+  "license"    : "MIT",
+  "authors"    : [
+    {
+      "name" : "Mikhail Dolgov",
+      "email": "dolgov@bk.ru"
+    }
+  ],
+  "keywords": [
+    "profiler",
+    "extra"   ,
+    "bundle"  ,
+    "doctrine",
+    "silex"
+  ],
+  "require": {
+    "php"                                        : ">=5.4",
+    "silex/silex"                                : "~1.2",
+    "silex/web-profiler"                         : "1.*",
+    "doctrine/orm"                               : "~2.2",
+    "dflydev/doctrine-orm-service-provider"      : "1.0.*",
+    "sorien/silex-dbal-profiler"                 : "~1.1",
+    "twig/twig"                                  : ">=1.8,<2.0-dev",
+    "debesha/doctrine-hydration-profiler-bundle" : "~1.0@dev"
+  },
+  "autoload": {
+    "psr-4":{
+      "SilexDoctrineHydrationProfile\\": "src/SilexDoctrineHydrationProfile/"
+    }
+  }
+}
