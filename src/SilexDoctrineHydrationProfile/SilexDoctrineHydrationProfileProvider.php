@@ -5,7 +5,6 @@
 
 namespace SilexDoctrineHydrationProfile;
 
-
 use Debesha\DoctrineProfileExtraBundle\DataCollector\HydrationDataCollector;
 use Debesha\DoctrineProfileExtraBundle\ORM\HydrationLogger;
 use Silex\Application;
