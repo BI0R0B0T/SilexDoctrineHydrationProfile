@@ -5,7 +5,6 @@
 
 namespace SilexDoctrineHydrationProfile;
 
-use Debesha\DoctrineProfileExtraBundle\DataCollector\HydrationDataCollector;
 use Debesha\DoctrineProfileExtraBundle\ORM\HydrationLogger;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -26,8 +25,10 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
         $app["debesha.doctrine_extra_profiler.logger"] = $app->share(function () use ($app) {
             return new HydrationLogger($app->offsetGet("orm.em"));
         });
+        $app['debesha.class.hydrationDataCollector'] = 'Debesha\DoctrineProfileExtraBundle\DataCollector\HydrationDataCollector';
         $app["debesha.doctrine_extra_profiler.data_collector"] = $app->share(function () use ($app) {
-            return new HydrationDataCollector(
+            $class = $app['debesha.class.hydrationDataCollector'];
+            return new $class(
                 $app->offsetGet("debesha.doctrine_extra_profiler.logger")
             );
         });
