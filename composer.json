@@ -25,12 +25,6 @@
     "twig/twig"                                  : ">=1.8,<2.0-dev",
     "debesha/doctrine-hydration-profiler-bundle" : "~1.0@dev"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url" : "https://github.com/BI0R0B0T/dflydev-doctrine-orm-service-provider.git"
-    }
-  ],
   "autoload": {
     "psr-4":{
       "SilexDoctrineHydrationProfile\\": "src/SilexDoctrineHydrationProfile/"
