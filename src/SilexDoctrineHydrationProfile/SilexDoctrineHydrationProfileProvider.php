@@ -7,8 +7,9 @@ namespace SilexDoctrineHydrationProfile;
 
 use Debesha\DoctrineProfileExtraBundle\ORM\HydrationLogger;
 use Doctrine\DBAL\Types\Type;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
@@ -19,20 +20,20 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
     /**
      * Registers services on the given app.
      *
-     * @param Application $app
+     * @param Container $app
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app["debesha.doctrine_extra_profiler.logger"] = $app->share(function () use ($app) {
+        $app["debesha.doctrine_extra_profiler.logger"] = function () use ($app) {
             return new HydrationLogger($app->offsetGet("orm.em"));
-        });
+        };
         $app['debesha.class.hydrationDataCollector'] = 'SilexDoctrineHydrationProfile\Fix\DataCollector';
-        $app["debesha.doctrine_extra_profiler.data_collector"] = $app->share(function () use ($app) {
+        $app["debesha.doctrine_extra_profiler.data_collector"] = function () use ($app) {
             $class = $app['debesha.class.hydrationDataCollector'];
             return new $class(
                 $app->offsetGet("debesha.doctrine_extra_profiler.logger")
             );
-        });
+        };
 
         if ($app->offsetExists(self::ORM_EM_OPTIONS)) {
             $options = $app->offsetGet(self::ORM_EM_OPTIONS);
@@ -57,13 +58,13 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
         }
         $app[self::ORM_EM_OPTIONS] = $options;
 
-        $app['orm.ems'] = $app->share(function($app) {
+        $app['orm.ems'] = function($app) {
             /**
-             * @var \Pimple $app
+             * @var Container $app
              */
             $app['orm.ems.options.initializer']();
 
-            $ems = new \Pimple();
+            $ems = new Container();
             foreach ($app['orm.ems.options'] as $name => $options) {
                 if ($app['orm.ems.default'] === $name) {
                     // we use shortcuts here in case the default has been overridden
@@ -72,7 +73,7 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
                     $config = $app['orm.ems.config'][$name];
                 }
 
-                $ems[$name] = $app->share(function () use ($app, $options, $config) {
+                $ems[$name] = function () use ($app, $options, $config) {
                     /**
                      * @var $entityManagerClassName \Doctrine\ORM\EntityManager
                      */
@@ -82,15 +83,15 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
                         $config,
                         $app['dbs.event_manager'][$options['connection']]
                     );
-                });
+                };
             }
             return $ems;
-        });
+        };
 
-        $app['orm.ems.config'] = $app->share(function(\Pimple $app) {
+        $app['orm.ems.config'] = function(Container $app) {
             $app['orm.ems.options.initializer']();
 
-            $configs = new \Pimple();
+            $configs = new Container();
             foreach ($app['orm.ems.options'] as $name => $options) {
                 /**
                  * @var $config \Doctrine\ORM\Configuration
@@ -165,10 +166,10 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
             }
 
             return $configs;
-        });
+        };
 
 
-        $app['orm.driver.factory'] = $app->share(function(){
+        $app['orm.driver.factory'] = function(){
             $simpleList = array(
                 'simple_yml',
                 'simple_xml',
@@ -185,7 +186,7 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
                 }
                 throw new \InvalidArgumentException(sprintf('"%s" is not a recognized driver', $entity['type']));
             };
-        });
+        };
 
     }
 
