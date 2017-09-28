@@ -2,7 +2,7 @@
   "name"       : "bi0r0b0t/silex-doctrine-hydration-profiler",
   "description": "Information about hydration of doctrine entities at the profiler in Silex 2.0",
   "license"    : "MIT",
-  "version"    : "1.0.0",
+  "version"    : "1.0.1",
   "authors"    : [
     {
       "name" : "Mikhail Dolgov",
