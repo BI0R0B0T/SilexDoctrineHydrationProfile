@@ -188,31 +188,24 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
             };
         };
 
-    }
-
-    /**
-     * Bootstraps the application.
-     *
-     * @param Application $app
-     */
-    public function boot(Application $app)
-    {
-        $collectors  = $app["data_collectors"];
-        $templates   = $app["data_collector.templates"];
-        $templates[] = array("hydrations", "@DebeshaDoctrineProfileExtraBundle/Collector/hydrations.html.twig");
-        $options     = array('is_safe' => array('html'));
-        $callable    = function ($controller, $attributes = array(), $query = array()) {
-            return new ControllerReference($controller, $attributes, $query);
-        };
-        $collectors["hydrations"] = $app->share(function ($app) {
-            return $app["debesha.doctrine_extra_profiler.data_collector"];
+        $app->extend('data_collectors', function($collectors) {
+            $collectors["hydrations"] = function ($app) {
+                return $app["debesha.doctrine_extra_profiler.data_collector"];
+            };
+            return $collectors;
         });
-
-        $app["data_collectors"]          = $collectors;
-        $app["data_collector.templates"] = $templates;
-
-        $app["twig"]->addFunction(new \Twig_SimpleFunction("controller", $callable, $options));
-        $app['twig.loader.filesystem']->addPath(dirname(__FILE__) . DIRECTORY_SEPARATOR . "Views", "DebeshaDoctrineProfileExtraBundle");
+        $app->extend("data_collector.templates", function ($templates) {
+            $templates[] = array("hydrations", "@DebeshaDoctrineProfileExtraBundle/Collector/hydrations.html.twig");
+            return $templates;
+        } );
+        $app->extend('twig', function ($twig) use($app) {
+            $options     = array('is_safe' => array('html'));
+            $callable    = function ($controller, $attributes = array(), $query = array()) {
+                return new ControllerReference($controller, $attributes, $query);
+            };
+            $twig->addFunction(new \Twig_SimpleFunction("controller", $callable, $options));
+            $app['twig.loader.filesystem']->addPath(dirname(__FILE__) . DIRECTORY_SEPARATOR . "Views", "DebeshaDoctrineProfileExtraBundle");
+            return $twig;
+        });
     }
-
 }
