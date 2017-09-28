@@ -9,8 +9,14 @@ Entity Manger provided by [dflydev/doctrine-orm-service-provider](https://github
 
 # Installation
 
+## Silex 2.0
+
+    composer require --dev bi0r0b0t/silex-doctrine-hydration-profiler "~1.0"
+
+## Silex 1.x
+
     composer require --dev bi0r0b0t/silex-doctrine-hydration-profiler "~0.1"
-    
+
 # Registering
   
     $app->register(new SilexDoctrineHydrationProfile\SilexDoctrineHydrationProfileProvider());
