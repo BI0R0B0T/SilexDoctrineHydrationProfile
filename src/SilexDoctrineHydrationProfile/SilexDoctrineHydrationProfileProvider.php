@@ -11,6 +11,7 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
+use Twig\TwigFunction;
 
 class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
 {
@@ -203,7 +204,7 @@ class SilexDoctrineHydrationProfileProvider implements ServiceProviderInterface
             $callable    = function ($controller, $attributes = array(), $query = array()) {
                 return new ControllerReference($controller, $attributes, $query);
             };
-            $twig->addFunction(new \Twig_SimpleFunction("controller", $callable, $options));
+            $twig->addFunction(new TwigFunction("controller", $callable, $options));
             $app['twig.loader.filesystem']->addPath(dirname(__FILE__) . DIRECTORY_SEPARATOR . "Views", "DebeshaDoctrineProfileExtraBundle");
             return $twig;
         });
